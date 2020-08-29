@@ -36,11 +36,8 @@ class CharacterController extends Controller
      */
     public function store(CharacterStoreRequest $request)
     {
-        // Checks if the house is valid
-        // TODO: Implement a proper checking function
-        if ($request->house != '5a05e2b252f721a3cf2ea33f') {
-            abort(400, 'Invalid house supplied.');
-        }
+        // Checks if the provided house is valid
+        $this->checkIsHouseValid($request->house);
 
         // Creates the new Character and fills it with request data
         $character = new Character;
@@ -78,6 +75,9 @@ class CharacterController extends Controller
      */
     public function update(CharacterUpdateRequest $request, $id)
     {
+        // Checks if the provided house is valid
+        $this->checkIsHouseValid($request->house);
+
         // Fetches the character from the database
         $character = Character::findOrFail($id);
 
@@ -108,5 +108,27 @@ class CharacterController extends Controller
         return new CharacterResource(
             $character
         );
+    }
+
+    /**
+     * Checks if a given house ID is valid
+     * 
+     * @param string $houseId
+     * @return bool
+     */
+    public function isHouseValid($houseId) {
+        // TODO: Implement a proper checking function
+        return $houseId == '5a05e2b252f721a3cf2ea33f';
+    }
+
+    /**
+     * Checks if a given house ID is valid and automatically returns an error status and message if invalid
+     * 
+     * @param string $houseId
+     */
+    public function checkIsHouseValid($houseId) {
+        if (!$this->isHouseValid($houseId)) {
+            abort(400, 'Invalid house supplied.');
+        }
     }
 }
