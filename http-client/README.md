@@ -1,0 +1,1 @@
+The files on this directory are meant to be used with the [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client) VS Code extension and the included Vagrant VM. Your mileage outside them may vary.

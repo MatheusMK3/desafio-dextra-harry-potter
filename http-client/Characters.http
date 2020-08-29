@@ -1,0 +1,49 @@
+# REST Client manual tests for the Character controller
+
+###
+
+# Gets an index of all characters
+GET http://192.168.9.34/v1/characters/ HTTP/1.1
+Accept: application/json
+
+###
+
+# Creates a new character
+POST http://192.168.9.34/v1/characters/ HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+
+{
+    "name": "Harry Potter",
+    "role": "student",
+    "school": "Hogwarts School of Witchcraft and Wizardry",
+    "house": "5a05e2b252f721a3cf2ea33f",
+    "patronus": "stag"
+}
+
+###
+
+# Shows the character with ID 1
+GET http://192.168.9.34/v1/characters/1 HTTP/1.1
+Accept: application/json
+
+###
+
+# Updates the character with ID 1
+PUT http://192.168.9.34/v1/characters/1 HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+
+{
+    "name": "Some other student",
+    "role": "student",
+    "school": "Hogwarts School of Witchcraft and Wizardry",
+    "house": "5a05e2b252f721a3cf2ea33f",
+    "patronus": "stag"
+}
+
+###
+
+# Deletes the character with ID 1
+DELETE http://192.168.9.34/v1/characters/1 HTTP/1.1
+Accept: application/json
