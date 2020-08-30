@@ -12,6 +12,8 @@ use App\Http\Requests\V1\CharacterDestroyRequest;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Cache;
 
 class CharacterController extends Controller
 {
@@ -117,8 +119,51 @@ class CharacterController extends Controller
      * @return bool
      */
     public function isHouseValid($houseId) {
-        // TODO: Implement a proper checking function
-        return $houseId == '5a05e2b252f721a3cf2ea33f';
+        // Cleanup house ID
+        $houseId = trim($houseId);
+
+        // If house ID is empty, automatically returns false
+        if (empty($houseId)) {
+            return false;
+        }
+
+        // Defines a cache key we'll be using
+        $cacheKey = 'houses_' . $houseId;
+
+        // Tries to retrieve the house from the cache
+        $house = Cache::get($cacheKey);
+
+        // Checks if the house is valid from cache, if it's found, then return true since we validated it
+        if (!is_null($house)) {
+            return true;
+        }
+
+        // Sends request to the PotterAPI Houses route
+        $response = Http::get('https://www.potterapi.com/v1/houses/' . $houseId . '?key=' . env('POTTERAPI_KEY'))->json();
+
+        // Test: The response MUST not be empty since it might mean NOT FOUND
+        if (empty($response) || count($response) == 0) {
+            return false;
+        }
+
+        // Test: The response MUST have a first element
+        if (!isset($response[0])) {
+            return false;
+        }
+
+        // Extract the first element of the response as the House
+        $house = $response[0];
+
+        // Test the House must be an array
+        if (!is_array($house)) {
+            return false;
+        }
+
+        // Save the found house on cache
+        Cache::put($cacheKey, $house);
+
+        // Returns true = a valid house
+        return true;
     }
 
     /**
