@@ -24,9 +24,17 @@ class CharacterController extends Controller
      */
     public function index(CharacterIndexRequest $request)
     {
+        // Initializes the query with Eloquent pagination
+        $query = Character::paginate();
+
+        // If our request passes a filter by house, handles it too
+        if ($request->has('house')) {
+            $query = $query->where('house', $request->house);
+        }
+
         // Returns a new API Resource with the Eloquent-paginated characters
         return new CharacterResource(
-            Character::paginate()
+            $query
         );
     }
 
