@@ -1,0 +1,79 @@
+# This file was build based on DigitalOcean's guide on getting Laravel running under Docker, with some changes to better organise code
+# https://www.digitalocean.com/community/tutorials/how-to-set-up-laravel-nginx-and-mysql-with-docker-compose-pt
+
+version: '3'
+services:
+
+    # Our Laravel application and PHP now
+    app:
+        build:
+            context: ./
+            dockerfile: ./Dockerfile
+        image: php:7.4-fpm
+        container_name: app
+        restart: unless-stopped
+        tty: true
+        environment: 
+            SERVICE_TAGS: dev
+            SERVICE_NAME: app
+
+            # Setup Laravel's .env file here
+            APP_ENV: local
+            DB_CONNECTION: mysql
+            DB_HOST: db
+            DB_PORT: 3306
+            DB_DATABASE: application
+            DB_USERNAME: root
+            DB_PASSWORD: secret
+
+            # Place your PotterAPI key BELOW!
+            POTTERAPI_KEY: invalid-key
+
+        working_dir: /var/www
+        networks: 
+            - network-application
+        volumes:
+            - ./docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
+
+    # NGINX service for webserver
+    www:
+        image: nginx:alpine
+        container_name: www
+        restart: unless-stopped
+        tty: true
+        ports:
+            - "80:80"
+            - "443:443"
+        networks:
+            - network-application
+        volumes:
+            - ./src:/var/www
+            - ./docker/nginx/:/etc/nginx/conf.d/
+        command: [nginx-debug, '-g', 'daemon off;']
+    
+    # MySQL database service
+    db:
+        image: mysql:5.7.22
+        container_name: db
+        restart: unless-stopped
+        tty: true
+        environment: 
+            MYSQL_DATABASE: application
+            MYSQL_ROOT_PASSWORD: secret
+            SERVICE_TAGS: dev
+            SERVICE_NAME: mysql
+        networks: 
+            - network-application
+        volumes:
+            - dbdata:/var/lib/mysql
+            - ./docker/mysql/my.cnf:/etc/mysql/my.cnf
+
+# Our app's network
+networks: 
+    network-application:
+        driver: bridge
+
+# Our app's volumes
+volumes:
+    dbdata:
+        driver: local
