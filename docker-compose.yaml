@@ -49,7 +49,6 @@ services:
         volumes:
             - ./src:/var/www
             - ./docker/nginx/:/etc/nginx/conf.d/
-        command: [nginx-debug, '-g', 'daemon off;']
     
     # MySQL database service
     db:

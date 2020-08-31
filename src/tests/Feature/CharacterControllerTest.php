@@ -39,7 +39,10 @@ class CharacterControllerTest extends TestCase
 
         // Asserts this JSON contains a paginated response
         $response->assertJsonStructure([
-            'data', 'current_page', 'last_page', 'per_page', 'total',
+            'data', 
+            'meta' => [
+                'current_page', 'last_page', 'per_page', 'total'
+            ],
         ]);
     }
     

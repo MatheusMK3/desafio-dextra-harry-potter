@@ -12,9 +12,17 @@ By doing so, you should have an accessible environment up and running at the [19
 
 You can also play with `vagrant ssh` by navigating to the `~/app` directory, which maps to the `src` directory.
 
+### Running Tests
+
+To run all test cases, enter your Vagrant instance and go to the app directory, then run `phpunit --testdox` to run all tests.
+
+You can also run HTTP tests manually by using the sample files under the `http-client` directory. They should allow you properly CRUD into your development environment by using the [VS Code REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client).
+
 ## Docker Environment
 
 In case you want to run this application with Docker, you can execute the `docker-run.sh` shell script included with this repository, which will properly run all migrations and generate application keys for Laravel.
+
+After doing so, the application should be up and running at your [port 80](http://127.0.0.1).
 
 ## Adding your PotterAPI key
 
